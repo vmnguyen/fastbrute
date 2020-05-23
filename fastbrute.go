@@ -26,7 +26,7 @@ func doRequest(i interface{}) {
 	req.SetRequestURI(url)
 	client.Do(req, resp)
 	statusCode := resp.StatusCode()
-	fmt.Println(statusCode)
+	fmt.Printf("[%d] %s \n", statusCode, url)
 }
 func brute(request string, concurrent int, path string) {
 	defer ants.Release()
@@ -49,8 +49,7 @@ func brute(request string, concurrent int, path string) {
 	for scanner.Scan() {
 		wg.Add(1)
 		url := request + "/" + scanner.Text()
-		fmt.Println(url)
-		_ = p.Invoke(string(request + ""))
+		_ = p.Invoke(string(url))
 	}
 	wg.Wait()
 
