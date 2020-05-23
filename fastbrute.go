@@ -1,8 +1,10 @@
 package main
 
 import (
+	"bufio"
 	"flag"
 	"fmt"
+	"os"
 	"sync"
 
 	"github.com/panjf2000/ants/v2"
@@ -26,7 +28,7 @@ func doRequest(i interface{}) {
 	statusCode := resp.StatusCode()
 	fmt.Println(statusCode)
 }
-func brute(request string, concurrent int) {
+func brute(request string, concurrent int, path string) {
 	defer ants.Release()
 	fmt.Println(request)
 	var wg sync.WaitGroup
@@ -35,9 +37,20 @@ func brute(request string, concurrent int) {
 		wg.Done()
 	})
 	defer p.Release()
-	for i := 1; i < 2000; i++ {
+
+	//Read wordlist
+	file, err := os.Open(path)
+	if err != nil {
+		fmt.Println("Can't open wordlist")
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
 		wg.Add(1)
-		_ = p.Invoke(string(request))
+		url := request + "/" + scanner.Text()
+		fmt.Println(url)
+		_ = p.Invoke(string(request + ""))
 	}
 	wg.Wait()
 
@@ -53,10 +66,13 @@ func main() {
 	var requestPath string
 	flag.StringVar(&requestPath, "r", "/path/to/request/file", "Path to request file")
 
+	var wordlist string
+	flag.StringVar(&wordlist, "w", "/path/to/wordlist/", "Path to wordlist file")
+
 	var mode int
 	flag.IntVar(&mode, "m", 1, "Mode to scan, 1 for stdin, 2 for request file")
 
 	flag.Parse()
 
-	brute(target, concurrent)
+	brute(target, concurrent, wordlist)
 }
