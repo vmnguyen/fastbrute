@@ -2,6 +2,7 @@
 HTTP brute forcer written in Go
 
 # Usage
+```
 fastbrute:
   -c int
         Concurrent (default 50)
@@ -13,3 +14,4 @@ fastbrute:
         Target to brute force (default "https://example.com")
   -w string
         Path to wordlist file (default "/path/to/wordlist/")
+```
