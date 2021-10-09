@@ -1,8 +1,8 @@
 v1
-api/auth/introspect
+api
 v2
 v3
 v4
-v4
 admin
-api
+auth
+introspect
