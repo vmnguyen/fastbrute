@@ -78,24 +78,15 @@ func brute(target string, concurrent int, path string, level int) {
 	for scanner.Scan() {
 		wordlist = append(wordlist, scanner.Text())
 	}
-	for i := 0; i < len(wordlist); i++ {
-		wg.Add(1)
-		url := target + "/" + wordlist[i]
-		_ = p.Invoke(string(url))
-	}
-	wg.Wait()
 
-	invalid = invalid_tmp
-	invalid_tmp = nil
-	fmt.Println(invalid)
-	for j := 0; j < level-1; j++ {
+	invalid = append(invalid, target)
+	for j := 0; j < level; j++ {
 		for line := 0; line < len(invalid); line++ {
 			for i := 0; i < len(wordlist); i++ {
 				wg.Add(1)
 				url := invalid[line] + "/" + wordlist[i]
 				_ = p.Invoke(string(url))
 			}
-
 		}
 		wg.Wait()
 		invalid = invalid_tmp
